@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Irregular Verb Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EDEEE4;
+    --paper-2: #E4E5D8;
+    --rule: #B7C0CE;
+    --ink: #232A22;
+    --ink-soft: #5B6459;
+    --red: #B23A2E;
+    --red-soft: #D8CFC5;
+    --green: #2F6B3A;
+    --green-bg: #DCE6D6;
+    --stamp: #8B3A3A;
+    --focus: #6B7A99;
+    --bg: var(--paper);
+    --card: #F5F5EC;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #1E211C;
+      --paper-2: #262B22;
+      --rule: #3B443D;
+      --ink: #E7E7DC;
+      --ink-soft: #9AA294;
+      --red: #E0776A;
+      --red-soft: #3A2C28;
+      --green: #8FBF8A;
+      --green-bg: #26332A;
+      --stamp: #C97B72;
+      --focus: #93A7C9;
+      --bg: var(--paper);
+      --card: #262A21;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #1E211C;
+    --paper-2: #262B22;
+    --rule: #3B443D;
+    --ink: #E7E7DC;
+    --ink-soft: #9AA294;
+    --red: #E0776A;
+    --red-soft: #3A2C28;
+    --green: #8FBF8A;
+    --green-bg: #26332A;
+    --stamp: #C97B72;
+    --focus: #93A7C9;
+    --bg: var(--paper);
+    --card: #262A21;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    min-height: 100vh;
+    display:flex;
+    justify-content:center;
+    padding: 32px 16px 64px;
+  }
+
+  .sheet{
+    width:100%;
+    max-width: 620px;
+  }
+
+  .letterhead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+  }
+  .letterhead h1{
+    font-family:'Fraunces', Georgia, 'Times New Roman', serif;
+    font-weight: 600;
+    font-size: clamp(1.6rem, 5vw, 2.1rem);
+    margin:0;
+    letter-spacing: -0.01em;
+  }
+  .letterhead .sub{
+    color: var(--ink-soft);
+    font-size: 0.72rem;
+    margin-top: 4px;
+  }
+  .tally{
+    text-align:right;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    line-height:1.5;
+  }
+  .tally b{ color: var(--ink); font-size: 1rem; }
+
+  .settings{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .chip{
+    border: 1px solid var(--rule);
+    background: var(--card);
+    color: var(--ink-soft);
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    font-family: inherit;
+    cursor:pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .chip:hover{ border-color: var(--ink-soft); }
+  .chip.active{
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .letter-row{
+    margin-bottom: 22px;
+  }
+  .letter-row-label{
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .letters{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .letter-chip{
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--rule);
+    background: var(--card);
+    color: var(--ink-soft);
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .letter-chip:hover{ border-color: var(--ink-soft); }
+  .letter-chip.active{
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .letter-chip.empty{
+    opacity: 0.28;
+    cursor: default;
+  }
+  .letter-actions{
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+  }
+  .mini-link{
+    font-family: inherit;
+    font-size: 0.7rem;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+  .mini-link:hover{ color: var(--ink); }
+  .letter-actions .dot{ margin: 0 6px; }
+  .letter-row .empty-warning{
+    font-size: 0.72rem;
+    color: var(--red);
+    margin-top: 6px;
+  }
+
+  .card{
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 30px 26px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 22px;
+  }
+  .progress-row .count{
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  .progress-row .streak{
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+
+  .prompt-label{
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .prompt{
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    margin: 0 0 26px 0;
+    line-height: 1;
+  }
+
+  .fields{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .field{ display:flex; flex-direction:column; }
+  .field label{
+    font-size: 0.66rem;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .field input{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.05rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--rule);
+    padding: 6px 2px 8px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .field input:focus{ border-color: var(--focus); }
+  .field.correct input{ border-color: var(--green); color: var(--green); }
+  .field.wrong input{ border-color: var(--red); color: var(--red); }
+
+  .field .correction{
+    font-size: 0.72rem;
+    color: var(--red);
+    margin-top: 6px;
+    min-height: 1em;
+  }
+
+  .actions{
+    display:flex;
+    gap: 10px;
+    align-items:center;
+    flex-wrap: wrap;
+  }
+  button.primary{
+    font-family: inherit;
+    font-size: 0.82rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 11px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  button.primary:hover{ opacity: 0.88; }
+  button.ghost{
+    font-family: inherit;
+    font-size: 0.78rem;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    padding: 10px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  button.ghost:hover{ border-color: var(--ink-soft); color: var(--ink); }
+
+  .stamp{
+    position:absolute;
+    top: 22px;
+    right: 24px;
+    font-family: 'Fraunces', serif;
+    font-weight:600;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--stamp);
+    border: 2px solid var(--stamp);
+    padding: 3px 10px;
+    border-radius: 3px;
+    transform: rotate(-6deg);
+    opacity: 0;
+    transition: opacity .18s;
+    pointer-events:none;
+  }
+  .stamp.show{ opacity: 0.9; }
+
+  .missed-panel{
+    margin-top: 26px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 16px;
+  }
+  .missed-panel h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0 10px;
+  }
+  .missed-row{
+    display:flex;
+    justify-content:space-between;
+    font-size: 0.78rem;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .missed-row b{ color: var(--ink); font-weight: 500; }
+  .missed-row .answer{ color: var(--green); }
+
+  .hint{
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+  kbd{
+    font-family: inherit;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.66rem;
+  }
+
+  @media (max-width: 420px){
+    .fields{ grid-template-columns: 1fr; }
+    .card{ padding: 24px 18px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="letterhead">
+    <div>
+      <h1>Irregular verb drill</h1>
+      <div class="sub">base form → past simple → past participle · easy = 120 common verbs, hard = all 148</div>
+    </div>
+    <div class="tally">
+      <div><b id="scoreCorrect">0</b> / <span id="scoreTotal">0</span> correct</div>
+      <div id="scorePct">—</div>
+    </div>
+  </div>
+
+  <div class="settings">
+    <button class="chip active" data-difficulty="easy">easy</button>
+    <button class="chip" data-difficulty="hard">hard</button>
+  </div>
+
+  <div class="settings">
+    <button class="chip active" data-mode="both">both forms</button>
+    <button class="chip" data-mode="past">past simple only</button>
+    <button class="chip" data-mode="participle">participle only</button>
+    <button class="chip" id="resetScore" style="margin-left:auto;">reset score</button>
+  </div>
+
+  <div class="letter-row">
+    <div class="letter-row-label">starting letter</div>
+    <div class="letters" id="letters"></div>
+    <div class="letter-actions">
+      <button class="mini-link" id="allLetters">all</button>
+      <span class="dot">·</span>
+      <button class="mini-link" id="noneLetters">none</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stamp" id="stamp">correct</div>
+    <div class="progress-row">
+      <div class="count" id="seenCount">verb 1 of 120 · shuffled</div>
+      <div class="streak" id="streak">streak 0</div>
+    </div>
+
+    <div class="prompt-label">to</div>
+    <h2 class="prompt" id="prompt">go</h2>
+
+    <div class="fields" id="fields">
+      <div class="field" id="pastField">
+        <label for="pastInput">past simple</label>
+        <input id="pastInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="went">
+        <div class="correction" id="pastCorrection"></div>
+      </div>
+      <div class="field" id="partField">
+        <label for="partInput">past participle</label>
+        <input id="partInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="gone">
+        <div class="correction" id="partCorrection"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="checkBtn">Check</button>
+      <button class="ghost" id="skipBtn">Skip</button>
+      <button class="ghost" id="nextBtn" style="display:none;">Next verb →</button>
+    </div>
+
+    <div class="hint">press <kbd>Enter</kbd> to check, then <kbd>Enter</kbd> again for the next verb</div>
+
+    <div class="missed-panel" id="missedPanel" style="display:none;">
+      <h2>Verbs to review</h2>
+      <div id="missedList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CORE_VERBS = [
+["be","was/were","been"],["become","became","become"],["begin","began","begun"],
+["bend","bent","bent"],["bet","bet","bet"],["bind","bound","bound"],
+["bite","bit","bitten"],["bleed","bled","bled"],["blow","blew","blown"],
+["break","broke","broken"],["breed","bred","bred"],["bring","brought","brought"],
+["build","built","built"],["burn","burnt","burnt"],["burst","burst","burst"],
+["buy","bought","bought"],["catch","caught","caught"],["choose","chose","chosen"],
+["cling","clung","clung"],["come","came","come"],["cost","cost","cost"],
+["creep","crept","crept"],["cut","cut","cut"],["deal","dealt","dealt"],
+["dig","dug","dug"],["dive","dove","dived"],["do","did","done"],
+["draw","drew","drawn"],["dream","dreamt","dreamt"],["drink","drank","drunk"],
+["drive","drove","driven"],["eat","ate","eaten"],["fall","fell","fallen"],
+["feed","fed","fed"],["feel","felt","felt"],["fight","fought","fought"],
+["find","found","found"],["flee","fled","fled"],["fly","flew","flown"],
+["forbid","forbade","forbidden"],["forget","forgot","forgotten"],["forgive","forgave","forgiven"],
+["freeze","froze","frozen"],["get","got","gotten"],["give","gave","given"],
+["go","went","gone"],["grind","ground","ground"],["grow","grew","grown"],
+["hang","hung","hung"],["have","had","had"],["hear","heard","heard"],
+["hide","hid","hidden"],["hit","hit","hit"],["hold","held","held"],
+["hurt","hurt","hurt"],["keep","kept","kept"],["kneel","knelt","knelt"],
+["know","knew","known"],["lay","laid","laid"],["lead","led","led"],
+["lean","leant","leant"],["leap","leapt","leapt"],["learn","learnt","learnt"],
+["leave","left","left"],["lend","lent","lent"],["let","let","let"],
+["lie","lay","lain"],["light","lit","lit"],["lose","lost","lost"],
+["make","made","made"],["mean","meant","meant"],["meet","met","met"],
+["mistake","mistook","mistaken"],["pay","paid","paid"],["prove","proved","proven"],
+["put","put","put"],["quit","quit","quit"],["read","read","read"],
+["ride","rode","ridden"],["ring","rang","rung"],["rise","rose","risen"],
+["run","ran","run"],["say","said","said"],["see","saw","seen"],
+["seek","sought","sought"],["sell","sold","sold"],["send","sent","sent"],
+["set","set","set"],["sew","sewed","sewn"],["shake","shook","shaken"],
+["shed","shed","shed"],["shine","shone","shone"],["shoot","shot","shot"],
+["show","showed","shown"],["shrink","shrank","shrunk"],["shut","shut","shut"],
+["sing","sang","sung"],["sink","sank","sunk"],["sit","sat","sat"],
+["sleep","slept","slept"],["slide","slid","slid"],["sling","slung","slung"],
+["speak","spoke","spoken"],["speed","sped","sped"],["spend","spent","spent"],
+["spill","spilt","spilt"],["spin","spun","spun"],["spit","spat","spat"],
+["split","split","split"],["spread","spread","spread"],["spring","sprang","sprung"],
+["stand","stood","stood"],["steal","stole","stolen"],["stick","stuck","stuck"],
+["sting","stung","stung"],["stink","stank","stunk"],["strike","struck","struck"],
+["swear","swore","sworn"],["sweep","swept","swept"],["swim","swam","swum"],
+["swing","swung","swung"],["take","took","taken"],["teach","taught","taught"],
+["tear","tore","torn"],["tell","told","told"],["think","thought","thought"],
+["throw","threw","thrown"],["understand","understood","understood"],["wake","woke","woken"],
+["wear","wore","worn"],["weep","wept","wept"],["win","won","won"],
+["wind","wound","wound"],["withdraw","withdrew","withdrawn"],["write","wrote","written"]
+];
+
+const EXTRA_VERBS = [
+["bear","bore","borne"],["beat","beat","beaten"],["bid","bid","bid"],
+["broadcast","broadcast","broadcast"],["bust","bust","bust"],["cast","cast","cast"],
+["fling","flung","flung"],["forecast","forecast","forecast"],["forsake","forsook","forsaken"],
+["rid","rid","rid"],["saw","sawed","sawn"],["shear","sheared","shorn"],
+["slay","slew","slain"],["slink","slunk","slunk"],["slit","slit","slit"],
+["sneak","snuck","snuck"],["sow","sowed","sown"],["stride","strode","stridden"],
+["string","strung","strung"],["strive","strove","striven"],["swell","swelled","swollen"],
+["thrive","throve","thrived"],["thrust","thrust","thrust"],["tread","trod","trodden"],
+["weave","wove","woven"],["wring","wrung","wrung"],["wet","wet","wet"]
+];
+
+const VERBS = CORE_VERBS.concat(EXTRA_VERBS);
+
+let deck = [];
+let idx = 0;
+let mode = "both";
+let difficulty = "easy"; // "easy" = CORE_VERBS only, "hard" = CORE_VERBS + EXTRA_VERBS
+let checked = false;
+let streak = 0;
+let missed = []; // {base, past, part}
+let score = { correct: 0, total: 0 };
+let activeLetters = new Set(); // starting letters currently included
+
+const $ = id => document.getElementById(id);
+const promptEl = $("prompt"), pastInput = $("pastInput"), partInput = $("partInput"),
+  pastField = $("pastField"), partField = $("partField"),
+  pastCorrection = $("pastCorrection"), partCorrection = $("partCorrection"),
+  checkBtn = $("checkBtn"), skipBtn = $("skipBtn"), nextBtn = $("nextBtn"),
+  seenCount = $("seenCount"), streakEl = $("streak"), stamp = $("stamp"),
+  scoreCorrect = $("scoreCorrect"), scoreTotal = $("scoreTotal"), scorePct = $("scorePct"),
+  missedPanel = $("missedPanel"), missedList = $("missedList"),
+  lettersEl = $("letters"), allLettersBtn = $("allLetters"), noneLettersBtn = $("noneLetters");
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function loadState(){
+  try {
+    const raw = localStorage.getItem("irregularVerbDrillState");
+    if (raw){
+      const s = JSON.parse(raw);
+      if (s.score) score = s.score;
+    }
+  } catch(e) { /* ignore, start fresh */ }
+}
+function saveState(){
+  try {
+    localStorage.setItem("irregularVerbDrillState", JSON.stringify({ score }));
+  } catch(e) { /* storage unavailable, continue without persistence */ }
+}
+
+function normalize(s){
+  return s.trim().toLowerCase().replace(/\s+/g, " ");
+}
+function matches(userAnswer, correctAnswer){
+  const u = normalize(userAnswer);
+  if (!u) return false;
+  // allow any one of slash-separated accepted forms, e.g. "was/were"
+  const options = correctAnswer.split("/").map(o => normalize(o));
+  return options.includes(u);
+}
+
+function setMode(m){
+  mode = m;
+  document.querySelectorAll(".chip[data-mode]").forEach(c => {
+    c.classList.toggle("active", c.dataset.mode === m);
+  });
+  partField.style.display = (m === "past") ? "none" : "flex";
+  pastField.style.display = (m === "participle") ? "none" : "flex";
+}
+
+function renderScore(){
+  scoreCorrect.textContent = score.correct;
+  scoreTotal.textContent = score.total;
+  scorePct.textContent = score.total ? Math.round(100 * score.correct / score.total) + "%" : "—";
+}
+
+function difficultyList(){
+  return difficulty === "hard" ? VERBS : CORE_VERBS;
+}
+
+function currentPool(){
+  return difficultyList().filter(v => activeLetters.has(v[0][0].toLowerCase()));
+}
+
+function setDifficulty(d){
+  difficulty = d;
+  document.querySelectorAll(".chip[data-difficulty]").forEach(c => {
+    c.classList.toggle("active", c.dataset.difficulty === d);
+  });
+  streak = 0;
+  buildLetters();
+  newDeck();
+  loadVerb();
+}
+
+function newDeck(){
+  const pool = currentPool();
+  deck = shuffle(pool.length ? pool : difficultyList());
+  idx = 0;
+}
+
+function buildLetters(){
+  const present = [...new Set(difficultyList().map(v => v[0][0].toLowerCase()))].sort();
+  activeLetters = new Set(present); // all selected by default
+  lettersEl.innerHTML = "";
+  present.forEach(letter => {
+    const btn = document.createElement("button");
+    btn.className = "letter-chip active";
+    btn.textContent = letter.toUpperCase();
+    btn.dataset.letter = letter;
+    btn.addEventListener("click", () => {
+      if (activeLetters.has(letter)) activeLetters.delete(letter);
+      else activeLetters.add(letter);
+      btn.classList.toggle("active");
+      onLetterFilterChange();
+    });
+    lettersEl.appendChild(btn);
+  });
+}
+
+function onLetterFilterChange(){
+  streak = 0;
+  newDeck();
+  loadVerb();
+}
+
+function loadVerb(){
+  checked = false;
+  const pool = currentPool();
+  if (!pool.length){
+    promptEl.textContent = "—";
+    seenCount.textContent = "no verbs match this letter selection";
+    pastInput.value = ""; partInput.value = "";
+    checkBtn.style.display = "none";
+    skipBtn.style.display = "none";
+    nextBtn.style.display = "none";
+    return;
+  }
+  checkBtn.style.display = "inline-block";
+  if (idx >= deck.length){ newDeck(); }
+  const [base, past, part] = deck[idx];
+  promptEl.textContent = base;
+  promptEl.dataset.past = past;
+  promptEl.dataset.part = part;
+  pastInput.value = "";
+  partInput.value = "";
+  pastField.classList.remove("correct", "wrong");
+  partField.classList.remove("correct", "wrong");
+  pastCorrection.textContent = "";
+  partCorrection.textContent = "";
+  stamp.classList.remove("show");
+  checkBtn.style.display = "inline-block";
+  nextBtn.style.display = "none";
+  skipBtn.style.display = "inline-block";
+  seenCount.textContent = `verb ${idx + 1} of ${deck.length} · shuffled`;
+  streakEl.textContent = `streak ${streak}`;
+  const firstVisible = (mode === "participle") ? partInput : pastInput;
+  firstVisible.focus();
+}
+
+function check(){
+  if (checked || !currentPool().length) return;
+  checked = true;
+  const past = promptEl.dataset.past, part = promptEl.dataset.part;
+  let allCorrect = true;
+
+  if (mode !== "participle"){
+    const ok = matches(pastInput.value, past);
+    pastField.classList.add(ok ? "correct" : "wrong");
+    if (!ok){ pastCorrection.textContent = "→ " + past; allCorrect = false; }
+  }
+  if (mode !== "past"){
+    const ok = matches(partInput.value, part);
+    partField.classList.add(ok ? "correct" : "wrong");
+    if (!ok){ partCorrection.textContent = "→ " + part; allCorrect = false; }
+  }
+
+  score.total += 1;
+  if (allCorrect){
+    score.correct += 1;
+    streak += 1;
+    stamp.textContent = "correct";
+    stamp.style.color = "var(--green)";
+    stamp.style.borderColor = "var(--green)";
+  } else {
+    streak = 0;
+    stamp.textContent = "review";
+    stamp.style.color = "var(--red)";
+    stamp.style.borderColor = "var(--red)";
+    missed.push({ base: promptEl.textContent, past, part });
+    renderMissed();
+  }
+  stamp.classList.add("show");
+  streakEl.textContent = `streak ${streak}`;
+  renderScore();
+  saveState();
+
+  checkBtn.style.display = "none";
+  skipBtn.style.display = "none";
+  nextBtn.style.display = "inline-block";
+  nextBtn.focus();
+}
+
+function renderMissed(){
+  if (!missed.length){ missedPanel.style.display = "none"; return; }
+  missedPanel.style.display = "block";
+  const recent = missed.slice(-8).reverse();
+  missedList.innerHTML = recent.map(m =>
+    `<div class="missed-row"><b>${m.base}</b><span class="answer">${m.past} · ${m.part}</span></div>`
+  ).join("");
+}
+
+function next(){
+  idx += 1;
+  loadVerb();
+}
+
+checkBtn.addEventListener("click", check);
+skipBtn.addEventListener("click", next);
+nextBtn.addEventListener("click", next);
+
+[pastInput, partInput].forEach(input => {
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!checked) check(); else next();
+    }
+  });
+});
+
+document.querySelectorAll(".chip[data-mode]").forEach(chip => {
+  chip.addEventListener("click", () => { setMode(chip.dataset.mode); loadVerb(); });
+});
+
+document.querySelectorAll(".chip[data-difficulty]").forEach(chip => {
+  chip.addEventListener("click", () => setDifficulty(chip.dataset.difficulty));
+});
+
+allLettersBtn.addEventListener("click", () => {
+  activeLetters = new Set([...lettersEl.querySelectorAll(".letter-chip")].map(b => b.dataset.letter));
+  lettersEl.querySelectorAll(".letter-chip").forEach(b => b.classList.add("active"));
+  onLetterFilterChange();
+});
+noneLettersBtn.addEventListener("click", () => {
+  activeLetters = new Set();
+  lettersEl.querySelectorAll(".letter-chip").forEach(b => b.classList.remove("active"));
+  onLetterFilterChange();
+});
+
+$("resetScore").addEventListener("click", () => {
+  score = { correct: 0, total: 0 };
+  streak = 0;
+  missed = [];
+  renderScore();
+  renderMissed();
+  saveState();
+});
+
+loadState();
+renderScore();
+buildLetters();
+newDeck();
+setMode("both");
+loadVerb();
+</script>
+</body>
+</html>
